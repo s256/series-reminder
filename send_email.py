@@ -46,6 +46,7 @@ for series in favorites:
             except:
                 artwork_url = ''
             series_name = series_details['name']
+            series_url = 'https://thetvdb.com/series/' + series_details['slug']
             if len(new_episodes_list) > 1:
                  episode_name = ''
                  episode_no = f'{new_episodes_list[0]}-{new_episodes_list[len(new_episodes_list)-1]}'
@@ -59,7 +60,8 @@ for series in favorites:
                 SEASON_NO=season_no,
                 SERIES_NAME=series_name,
                 RELEASE_DATE=episode_date,
-                SERIES_POSTER_URL=artwork_url
+                SERIES_POSTER_URL=artwork_url,
+                SERIES_URL=series_url
             )
             msg = EmailMessage()
             msg['Subject'] = f'New Episode of {series_name} Season {season_no} on {episode_date}'
