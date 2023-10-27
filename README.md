@@ -18,3 +18,4 @@ Copy the `.env.tmpl` file to `.env` and add all fields.
 ## Run it
 
 You can run it manually, which is not very useful, run it as a cron job or in some other form of automation.
+Run `python send_email.py` from inside the virtual environment.
