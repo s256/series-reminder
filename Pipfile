@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 python-dotenv = "*"
 jinja2 = "*"
+tvdb-v4-official = {file = "tvdb-v4-python"}
 
 [dev-packages]
 

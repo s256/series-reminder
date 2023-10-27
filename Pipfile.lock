@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "5e09a2806966c2dbfbfee13d1dc7a3ba8241d3a7ad7dce650aa79e0973f5fd2f"
+            "sha256": "ef311b3842609b5b699c37e2135e17058eef856c68e7dffed25f5a38d001d9ea"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -99,6 +99,9 @@
             "index": "pypi",
             "markers": "python_version >= '3.8'",
             "version": "==1.0.0"
+        },
+        "tvdb-v4-official": {
+            "file": "tvdb-v4-python"
         }
     },
     "develop": {}
