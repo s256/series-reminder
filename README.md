@@ -1,6 +1,6 @@
 # Simple Series Reminder Python Script
 
-You need a TVDB API Key which you can easily require at (thetvdb.com)[https://thetvdb.com/api-information]. The access is free, as long as you're not selling the service.
+You need a TVDB API Key which you can easily require at [thetvdb.com](https://thetvdb.com/api-information). The access is free, as long as you're not selling the service.
 
 ## Setup
 Requires python 3.11
