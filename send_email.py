@@ -54,6 +54,9 @@ for series in favorites:
                     episode_name += new_episodes_name[f'{episode}']
                     if not index == len(new_episodes_list) -1:
                         episode_name += ', '
+            else:
+                episode_no = episode['number']
+                episode_name = episode['name']
             email_content = template.render(
                 EPISODE_NAME=episode_name,
                 EPISODE_NO=episode_no,
