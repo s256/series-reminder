@@ -2,9 +2,11 @@ import json
 import string
 import urllib
 import urllib.request
+import time
 from urllib import request, parse
 from http import HTTPStatus
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
+import urllib.error
 
 
 class Auth:
@@ -54,6 +56,14 @@ class Request:
                 res = json.load(e)
             except:
                 res = { }
+        except URLError as ue:
+            print(ue.reason)
+            res = {}
+        except TimeoutError:
+            wait_seconds = 10
+            print(f'retrying in {wait_seconds} seconds')
+            time.sleep(wait_seconds)
+            return self.make_request(url=url, if_modified_since=if_modified_since, data=data)
         data = res.get("data", None)
         if data is not None and res.get('status', 'failure') != 'failure':
             self.links = res.get("links", None)
