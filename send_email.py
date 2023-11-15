@@ -33,7 +33,7 @@ for series in favorites:
         nextAired = datetime.date.fromisoformat(details['nextAired'])
         today = datetime.date.today()
         if today == nextAired:
-            print(f'Today airs: {series_details["name"]}')
+            print(f'Today ({today.strftime('%d.%m.%y')}) airs: {series_details["name"]}')
             airs_next.append(series)
 
 for serie in airs_next:
