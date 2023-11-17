@@ -42,10 +42,11 @@ for serie in airs_next:
     new_episodes_list = []
     new_episodes_name = {}
     for episode in episodes.get('episodes',[]):
-        if datetime.date.fromisoformat(episode['aired']) == today:
-                season_no = episode['seasonNumber']
-                new_episodes_list.append(episode['number'])
-                new_episodes_name[f'{episode["number"]}'] = episode['name']
+        if episode['aired'] != None:
+            if datetime.date.fromisoformat(episode['aired']) == today:
+                    season_no = episode['seasonNumber']
+                    new_episodes_list.append(episode['number'])
+                    new_episodes_name[f'{episode["number"]}'] = episode['name']
     episode_date = today.strftime("%A, %d. %B")
     try:
         artwork_url = series_details[serie]['artworks'][0]['image']
