@@ -62,8 +62,8 @@ for serie in airs_next:
                 if not index == len(new_episodes_list) -1:
                     episode_name += ', '
     else:
-        episode_no = episode['number']
-        episode_name = episode['name']
+        episode_no = new_episodes_list[0]
+        episode_name = new_episodes_name[f'{episode_no}']
     email_content = template.render(
         EPISODE_NAME=episode_name,
         EPISODE_NO=episode_no,
@@ -78,7 +78,7 @@ for serie in airs_next:
     msg['From'] = f'Series Reminder Bot <{SMTP_USER}>'
     msg['to'] = RECEIVER_EMAIL
     msg.set_content(email_content, subtype='html')
-    print(f'Sending email about new episodes for "{series_details[serie]["name"]}"')
+    print(f'Sending email about new episodes for "{series_details[serie]["name"]}" - Season {season_no} Episode {episode_no}')
     with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_SSL_PORT, context=context) as server:
         server.login(SMTP_USER, SMTP_PASSWORD)
         server.send_message(msg)
