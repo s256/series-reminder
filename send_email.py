@@ -1,6 +1,7 @@
 import tvdb_v4_official
 import datetime
 import smtplib, ssl
+import time
 import os
 from dotenv import load_dotenv
 from jinja2 import Environment, FileSystemLoader
@@ -23,13 +24,27 @@ context = ssl.create_default_context()
 
 tvdb = tvdb_v4_official.TVDB(THE_TVDB_API_KEY)
 
-favorites = tvdb.get_user_favorites()['series']
+try:
+    favorites = tvdb.get_user_favorites()['series']
+except Exception as e:
+     print(f"Couldn't retrieve Favorites ({e}), retrying in 5 minutes")
+     time.sleep(300)
+     favorites = tvdb.get_user_favorites()['series']
+     
 airs_next = []
 series_details = {}
 for series in favorites:
-    series_details[series] = tvdb.get_series_extended(id=series)
+    try:
+        series_details[series] = tvdb.get_series_extended(id=series)
+    except:
+         time.sleep(300)
+         series_details[series] = tvdb.get_series_extended(id=series)
     print(f'retrieving details for {series_details[series]["name"]} , Series ID: {series}')
-    details = tvdb.get_series_nextAired(id=series)
+    try:
+        details = tvdb.get_series_nextAired(id=series)
+    except:
+         time.sleep(500)
+         details = tvdb.get_series_nextAired(id=series)
     if details['nextAired'] != '':
         nextAired = datetime.date.fromisoformat(details['nextAired'])
         today = datetime.date.today()
@@ -38,7 +53,11 @@ for series in favorites:
             airs_next.append(series)
 
 for serie in airs_next:
-    episodes = tvdb.get_series_episodes(id=serie)
+    try:
+        episodes = tvdb.get_series_episodes(id=serie)
+    except:
+         time.sleep(300)
+         episodes = tvdb.get_series_episodes(id=serie)
     new_episodes_list = []
     new_episodes_name = {}
     for episode in episodes.get('episodes',[]):
