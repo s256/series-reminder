@@ -95,7 +95,7 @@ for serie in airs_next:
         SERIES_URL=series_url
     )
     msg = EmailMessage()
-    msg['Subject'] = f'New Episode of {series_name} Season {season_no} on {episode_date}'
+    msg['Subject'] = f'New Episode of {series_name} - Season {season_no}, Episode {episode_no} on {episode_date}'
     msg['From'] = f'Series Reminder Bot <{SMTP_USER}>'
     msg['to'] = RECEIVER_EMAIL
     msg.set_content(email_content, subtype='html')
