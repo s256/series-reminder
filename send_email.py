@@ -51,6 +51,8 @@ for series in favorites:
         if today == nextAired:
             print(f'Today ({today.strftime("%d/%m/%y")}) airs: {series_details[series]["name"]}')
             airs_next.append(series)
+    else:
+         print(f'No episode airs today for {series_details[series]["name"]}')
 
 for serie in airs_next:
     try:
