@@ -40,6 +40,7 @@ for series in favorites:
          time.sleep(300)
          series_details[series] = tvdb.get_series_extended(id=series)
     print(f'retrieving details for {series_details[series]["name"]} , Series ID: {series}')
+
     try:
         details = tvdb.get_series_nextAired(id=series)
     except:
@@ -77,6 +78,9 @@ for serie in airs_next:
         artwork_url = ''
     series_name = series_details[serie]['name']
     series_url = 'https://thetvdb.com/series/' + series_details[serie]['slug']
+    original_network = series_details[series].get('originalNetwork','').get('name','Unknown Orig Network')
+    latest_network = series_details[series].get('latestNetwork', original_network).get('name', original_network)
+
     if len(new_episodes_list) > 1:
             episode_name = ''
             episode_no = f'{new_episodes_list[0]}-{new_episodes_list[len(new_episodes_list)-1]}'
@@ -94,7 +98,8 @@ for serie in airs_next:
         SERIES_NAME=series_name,
         RELEASE_DATE=episode_date,
         SERIES_POSTER_URL=artwork_url,
-        SERIES_URL=series_url
+        SERIES_URL=series_url,
+        NETWORK=latest_network
     )
     msg = EmailMessage()
     msg['Subject'] = f'New Episode of {series_name} - Season {season_no}, Episode {episode_no} on {episode_date}'
