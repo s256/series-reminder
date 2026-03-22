@@ -3,6 +3,8 @@ import datetime
 import smtplib, ssl
 import time
 import os
+import json
+import urllib.request
 from dotenv import load_dotenv
 from jinja2 import Environment, FileSystemLoader
 from email.message import EmailMessage
@@ -16,6 +18,49 @@ SMTP_PASSWORD = os.getenv('SMTP_PASSWORD')
 SMTP_USER = os.getenv('SMTP_USER')
 SMTP_SERVER = os.getenv('SMTP_SERVER')
 SMTP_SSL_PORT = 465
+TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN', '')
+TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID', '')
+SERIES_FETCHER_URL = os.getenv('SERIES_FETCHER_URL', 'http://localhost:8090')
+
+
+def send_telegram(text):
+    """Send a message via Telegram bot."""
+    if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
+        return
+    url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+    data = json.dumps({
+        "chat_id": TELEGRAM_CHAT_ID,
+        "text": text,
+        "parse_mode": "HTML",
+    }).encode("utf-8")
+    req = urllib.request.Request(url, data=data)
+    req.add_header("Content-Type", "application/json")
+    try:
+        with urllib.request.urlopen(req) as resp:
+            pass
+    except Exception as e:
+        print(f"Telegram send failed: {e}")
+
+
+def trigger_search(series_name, series_year, season, episodes):
+    """Trigger a search on series-fetcher."""
+    url = f"{SERIES_FETCHER_URL}/search"
+    payload = json.dumps({
+        "series_name": series_name,
+        "series_year": series_year,
+        "season": season,
+        "episodes": episodes,
+    }).encode("utf-8")
+    req = urllib.request.Request(url, data=payload)
+    req.add_header("Content-Type", "application/json")
+    try:
+        with urllib.request.urlopen(req) as resp:
+            result = json.load(resp)
+            print(f"Search triggered: {result}")
+            return result
+    except Exception as e:
+        print(f"Series-fetcher search failed: {e}")
+        return None
 
 environment = Environment(loader=FileSystemLoader('./'))
 template = environment.get_template('email_template.html')
@@ -110,6 +155,16 @@ for serie in airs_next:
     with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_SSL_PORT, context=context) as server:
         server.login(SMTP_USER, SMTP_PASSWORD)
         server.send_message(msg)
-    # DEBUG to test the Mail template
-    # with open(f'./email_{series_name}.html', mode="w", encoding="utf-8") as message:
-    #     message.write(email_content)
+
+    # Send Telegram notification
+    tg_text = (
+        f"<b>New Episode</b>: {series_name}\n"
+        f"Season {season_no}, Episode {episode_no}\n"
+        f"{episode_name}\n"
+        f"{episode_date} on {latest_network}"
+    )
+    send_telegram(tg_text)
+
+    # Trigger series-fetcher search
+    series_year = series_details[serie].get('year')
+    trigger_search(series_name, series_year, season_no, new_episodes_list)
